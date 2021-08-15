@@ -19,9 +19,9 @@ dependencies {
 gradlePlugin {
     // Define the plugin
     plugins {
-        greeting {
-            id = 'jacocoMerge.greeting'
-            implementationClass = 'jacocoMerge.JacocoMergePlugin'
+        jacocoMerge {
+            id = 'com.github.axthosarouris.jacocoMerge'
+            implementationClass = 'com.github.axthosarouris.jacocomerge.JacocoMergePlugin'
         }
     }
 }
