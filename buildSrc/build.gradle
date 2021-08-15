@@ -1,0 +1,16 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'groovy'
+}
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = "7.0.2"
+}
+
+
