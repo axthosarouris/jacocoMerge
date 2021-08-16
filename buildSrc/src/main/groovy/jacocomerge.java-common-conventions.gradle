@@ -1,0 +1,42 @@
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id 'java-library'
+    id 'jacoco'
+    id 'base'
+}
+
+group = 'com.github.axthosarouris'
+
+repositories {
+    mavenCentral()
+}
+
+def assertjVersion = "3.20.2"
+def junit5Version = '5.7.2'
+def mockitoVersion = '3.9.0'
+
+dependencies {
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta4'
+
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertjVersion
+
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit5Version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junit5Version
+    testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5Version
+
+}
+
+test {
+    failFast = true
+    testLogging {
+        events 'skipped', 'passed', 'failed'
+    }
+    finalizedBy jacocoTestReport
+}
+
+
+
+

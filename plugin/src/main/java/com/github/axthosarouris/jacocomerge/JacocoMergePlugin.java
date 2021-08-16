@@ -10,7 +10,6 @@ public class JacocoMergePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         TaskProvider<JacocoMerge> task = project.getTasks().register("jacocoMergeReport", JacocoMerge.class);
-
     }
 
 
