@@ -3,10 +3,6 @@ package com.github.axthosarouris.functionaltesting;
 import static com.github.axthosarouris.testingutils.filelisting.BuildFilesListing.PROJECT_FOLDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.github.axthosarouris.testingutils.filelisting.BuildFilesListing;
-import com.github.axthosarouris.testingutils.filelisting.ClassDetails;
-import com.github.axthosarouris.xmlreport.ClassEntry;
-import com.github.axthosarouris.xmlreport.MethodEntry;
-import com.github.axthosarouris.xmlreport.PackageEntry;
 import com.github.axthosarouris.xmlreport.XmlReport;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -14,11 +10,8 @@ import jakarta.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -28,7 +21,6 @@ public class ReportTesting {
 
     public static final File BUILD_FOLDER = new File(PROJECT_FOLDER, "build");
     public static final File JACOCO_MERGED_REPORT_FOLDER = new File(BUILD_FOLDER, "jacoco");
-    public static final String PACKAGE_DELIMITER = ".";
 
     @Test
     public void reportFolderExists() {
