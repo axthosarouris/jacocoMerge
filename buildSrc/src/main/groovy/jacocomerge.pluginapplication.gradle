@@ -1,0 +1,4 @@
+plugins{
+    id 'jacocomerge.java-library-conventions'
+    id 'com.github.axthosarouris.jacocoMerge'
+}

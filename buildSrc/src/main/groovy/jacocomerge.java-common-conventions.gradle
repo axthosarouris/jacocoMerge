@@ -4,13 +4,13 @@ plugins {
     id 'java-library'
     id 'jacoco'
     id 'base'
-}
 
-group = 'com.github.axthosarouris'
+}
 
 repositories {
     mavenCentral()
 }
+
 
 def assertjVersion = "3.20.2"
 def junit5Version = '5.7.2'
@@ -29,14 +29,25 @@ dependencies {
 
 }
 
-test {
-    failFast = true
-    testLogging {
-        events 'skipped', 'passed', 'failed'
+tasks.named('test') {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+        failFast = true
+        testLogging {
+            events 'skipped', 'passed', 'failed'
+        }
+        finalizedBy jacocoTestReport
     }
-    finalizedBy jacocoTestReport
 }
 
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
 
 

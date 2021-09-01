@@ -1,0 +1,13 @@
+plugins{
+    id 'jacocomerge.java-common-conventions'
+    id 'java-gradle-plugin'
+}
+
+
+dependencies {
+    implementation project(":moduleA")
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-core', version: '3.0.2'
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '3.0.2'
+
+
+}
