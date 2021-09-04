@@ -5,9 +5,14 @@ plugins{
 
 
 dependencies {
-    implementation project(":moduleA")
+    implementation project(":testProject01")
+    implementation project(":testProject01:moduleA")
+    implementation project(":testProject01:moduleB")
     implementation group: 'org.glassfish.jaxb', name: 'jaxb-core', version: '3.0.2'
     implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '3.0.2'
 
+}
 
+build{
+    mustRunAfter(":testProject01:jacocoMergeReport")
 }

@@ -12,7 +12,7 @@ public class JacocoMerge {
         File execFile = attempt(()->new ExecFileMerger(project).createMergedExecFile()).orElseThrow();
         Set<File> sourceFiles = new SourceFilesRetriever(project).getAllSourceFiles();
         Set<File> classFiles = new ClassFilesRetriever(project).listAllMainClassFiles();
-        ReportBuilder reportBuilder = new ReportBuilder(sourceFiles, classFiles);
+        ReportBuilder reportBuilder = new ReportBuilder(project,sourceFiles, classFiles);
         attempt(()-> writeReports(execFile, reportBuilder)).orElseThrow();
     }
 

@@ -6,42 +6,48 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class BuildFilesListing {
 
-    public static final File PROJECT_FOLDER = new File(new File("").getAbsolutePath()).getParentFile();
-    public static final File BUILD_SRC_FOLDER = new File(PROJECT_FOLDER, "buildSrc");
-    public static final File FUNCTIONAL_TESTING_FOLDER = new File(PROJECT_FOLDER, "functionaltesting");
     public static final String MAIN_SOURCE_FOLDERS = "build/classes/java/main/";
     public static final String CLASS_FILE_ENDING = ".class";
+    private final File projectFolder;
+    private final File pluginSrcFolder;
+    private final File functionalTestingFolder;
 
-    public List<File> listAllClassFiles(File folder) {
-        ArrayList<File> result = new ArrayList<>();
-        Stack<File> unvisitedFiles = initializeUnvisitedFiles(folder);
+    public BuildFilesListing(File projectFolder){
+        this.projectFolder = projectFolder;
+        this.pluginSrcFolder = new File(projectFolder,"buildSrc");
+        this.functionalTestingFolder = new File(projectFolder, "functionaltesting");
+
+    }
+
+    public List<File> listAllClassFiles() {
+        ArrayList<File> discoveredClassFiles = new ArrayList<>();
+        Stack<File> unvisitedFiles = initializeUnvisitedFiles();
         while (thereAreMoreFiles(unvisitedFiles)) {
             File currentFile = unvisitedFiles.pop();
             if (currentFile.isDirectory()) {
-                File[] files = currentFile.listFiles();
-                addClassFilesToResult(result, files);
-                addRestFilesToUnvisitedFiles(unvisitedFiles, files);
+                discoveredClassFiles.addAll(extractClassFiles(currentFile));
+                unvisitedFiles.addAll(listRestFiles(currentFile));
             }
         }
-        return filterOutBuildSrcAndTestClasses(result);
+        return filterOutBuildSrcAndTestClasses(discoveredClassFiles);
     }
 
-    public List<String> listClassNames(File folder) {
-
-        return listAllClassFiles(folder)
+    public List<String> listClassNames() {
+        return listAllClassFiles()
             .stream()
             .map(ClassDetails::new)
             .map(ClassDetails::getClassNameAsPath)
             .collect(Collectors.toList());
     }
 
-    public List<String> listAllMethodNames(File folder) {
-        return listAllClassFiles(folder).stream()
+    public List<String> listAllMethodNames() {
+        return listAllClassFiles().stream()
             .map(ClassDetails::new)
             .flatMap(ClassDetails::getDeclaredMethods)
             .map(Method::getName)
@@ -70,41 +76,31 @@ public class BuildFilesListing {
     }
 
     private boolean excludeFunctionalTestingFiles(File file) {
-        return !file.getAbsolutePath().startsWith(FUNCTIONAL_TESTING_FOLDER.getAbsolutePath());
+        return !file.getAbsolutePath().startsWith(functionalTestingFolder.getAbsolutePath());
     }
 
     private boolean excludeBuildSrcFiles(File file) {
-        return !file.getAbsolutePath().startsWith(BUILD_SRC_FOLDER.getAbsolutePath());
+        return !file.getAbsolutePath().startsWith(pluginSrcFolder.getAbsolutePath());
     }
 
     private boolean thereAreMoreFiles(Stack<File> unvisitedFiles) {
         return !unvisitedFiles.isEmpty();
     }
 
-    private void addRestFilesToUnvisitedFiles(Stack<File> unvisitedFiles, File[] files) {
-        List<File> restFiles = listRestFiles(files);
-        unvisitedFiles.addAll(restFiles);
-    }
-
-    private Stack<File> initializeUnvisitedFiles(File folder) {
+    private Stack<File> initializeUnvisitedFiles() {
         Stack<File> unvisitedFiles = new Stack<>();
-        unvisitedFiles.push(folder);
+        unvisitedFiles.push(projectFolder);
         return unvisitedFiles;
     }
 
-    private void addClassFilesToResult(ArrayList<File> result, File[] files) {
-        List<File> buildClassFiles = extractClassFiles(files);
-        result.addAll(buildClassFiles);
-    }
-
-    private List<File> listRestFiles(File[] files) {
-        return Arrays.stream(files)
+    private List<File> listRestFiles(File folder) {
+        return Arrays.stream(Objects.requireNonNull(folder.listFiles()))
             .filter(not(this::fileIsBuildClassFile))
             .collect(Collectors.toList());
     }
 
-    private List<File> extractClassFiles(File[] listFiles) {
-        return Arrays.stream(listFiles)
+    private List<File> extractClassFiles(File folder) {
+        return Arrays.stream(Objects.requireNonNull(folder.listFiles()))
             .filter(this::fileIsBuildClassFile)
             .collect(Collectors.toList());
     }

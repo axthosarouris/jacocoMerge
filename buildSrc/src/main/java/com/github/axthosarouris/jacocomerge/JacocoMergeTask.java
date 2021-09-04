@@ -9,7 +9,12 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * This is the class that implements the functionality of the "jacocoMerge" class.
+ */
 public abstract class JacocoMergeTask extends DefaultTask {
+
+    public static final String ROOT = null;
 
     @Inject
     public JacocoMergeTask() {
@@ -21,30 +26,37 @@ public abstract class JacocoMergeTask extends DefaultTask {
 
     @TaskAction
     public void taskAction() {
-        Project project = findProject();
+        Project project = extractProjectNameFromTaskConfig();
         JacocoMerge jacocoMerge = new JacocoMerge();
         jacocoMerge.createReport(project);
     }
 
-    private Project findProject() {
-        String projectName = getProjectName().getOrElse(null);
-        Project project = null;
-        if (isRootProject(projectName)) {
-            project = this.getProject().getRootProject();
-        } else {
-            project = this.getProject()
-                .getRootProject()
-                .getSubprojects()
-                .stream()
-                .filter(p -> p.getName().equals(projectName))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException(String.format("Module %s does not exist", projectName)));
-        }
-        return project;
+    private Project extractProjectNameFromTaskConfig() {
+        String projectName = getProjectName().getOrElse(ROOT);
+        return isRootProject(projectName)
+            ? getRootProject()
+            : locateSubProject(projectName);
+    }
+
+    private Project getRootProject() {
+        return this.getProject().getRootProject();
+    }
+
+    private Project locateSubProject(String projectName) {
+        return getRootProject()
+            .getSubprojects()
+            .stream()
+            .filter(subproject -> subproject.getName().equals(projectName))
+            .findAny()
+            .orElseThrow(() -> new RuntimeException(reportMissingProject(projectName)));
+    }
+
+    private String reportMissingProject(String projectName) {
+        return String.format("Module %s does not exist", projectName);
     }
 
     private boolean isRootProject(String projectName) {
         return Objects.isNull(projectName) || projectName.isBlank() || projectName.equalsIgnoreCase("root")
-            || this.getProject().getRootProject().getName().equals(projectName);
+               || getRootProject().getName().equals(projectName);
     }
 }

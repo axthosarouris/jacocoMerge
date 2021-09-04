@@ -8,11 +8,21 @@ import java.util.regex.Pattern;
 public class SourceFile {
 
     public static final Pattern SOURCE_FILE_PATTERN = Pattern.compile(".*?/src/.*?/java/(.*)");
+    /**
+     * The location of the source file in the disk. The absolute path.
+     */
     private final File physicalLocation;
-    private final File classLocation;
+    /**
+     * The location of the source file relative to the source folder.
+     */
+    private final File logicalLocation;
 
+    private SourceFile(File physicalLocation, File classLocation) {
+        this.physicalLocation = physicalLocation;
+        this.logicalLocation = classLocation;
+    }
 
-    public static SourceFile fromPhysicalLocation(File file){
+    public static SourceFile fromPhysicalLocation(File file) {
         return fromPhysicalLocation(file.getAbsolutePath());
     }
 
@@ -26,14 +36,9 @@ public class SourceFile {
         throw new RuntimeException("Not a source file:" + location);
     }
 
-    public SourceFile(File physicalLocation, File classLocation) {
-        this.physicalLocation = physicalLocation;
-        this.classLocation = classLocation;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(getPhysicalLocation(), getClassLocation());
+        return Objects.hash(getPhysicalLocation(), getLogicalLocation());
     }
 
     @Override
@@ -45,15 +50,15 @@ public class SourceFile {
             return false;
         }
         SourceFile that = (SourceFile) o;
-        return Objects.equals(getPhysicalLocation(), that.getPhysicalLocation()) && Objects.equals(
-            getClassLocation(), that.getClassLocation());
+        return Objects.equals(getPhysicalLocation(), that.getPhysicalLocation())
+               && Objects.equals(getLogicalLocation(), that.getLogicalLocation());
     }
 
     public File getPhysicalLocation() {
         return physicalLocation;
     }
 
-    public File getClassLocation() {
-        return classLocation;
+    public File getLogicalLocation() {
+        return logicalLocation;
     }
 }

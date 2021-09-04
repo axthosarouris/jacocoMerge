@@ -1,6 +1,5 @@
 package com.github.axthosarouris.functionaltesting;
 
-import static com.github.axthosarouris.testingutils.filelisting.BuildFilesListing.PROJECT_FOLDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.github.axthosarouris.testingutils.filelisting.BuildFilesListing;
 import com.github.axthosarouris.xmlreport.XmlReport;
@@ -15,23 +14,41 @@ import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ReportTesting {
 
-    public static final File BUILD_FOLDER = new File(PROJECT_FOLDER, "build");
-    public static final File JACOCO_MERGED_REPORT_FOLDER = new File(BUILD_FOLDER, "jacoco");
+    public static final String JACOCO_EXECUTION_FILES_DEFAULT_NAME = "test.exec";
+    public static final String JACOCO_AGGREGATE_REPORT_XML_FILENAME = "jacocoAggregateReport.xml";
+    public static final String CURRENT_FOLDER = "";
+    public static final String DEFAULT_BUILD_FOLDER = "build";
+    public static final String DEFAULT_JACOCO_FOLDER = "jacoco";
+    public static final String PROJECT_FOLDER = "testProject01";
+    private static final String REPORT_FOLDER = "aggregatedReport";
+    private File projectFolder;
+    private File jacocoMergedReportFolder;
+    private File buildJacocoFolder;
+
+    @BeforeEach
+    public void init() {
+        File rootFolder = new File(new File(CURRENT_FOLDER).getAbsolutePath()).getParentFile().getAbsoluteFile();
+        File projectFolder = new File(rootFolder, PROJECT_FOLDER);
+        setupFolders(projectFolder);
+    }
 
     @Test
     public void reportFolderExists() {
-        assertThat(JACOCO_MERGED_REPORT_FOLDER).exists();
+        assertThat(jacocoMergedReportFolder).exists();
     }
 
     @Test
     public void jacocoMergeReportFileExists() {
-        File reportFile = new File(JACOCO_MERGED_REPORT_FOLDER, "test.exec");
+        File reportFile = new File(buildJacocoFolder, JACOCO_EXECUTION_FILES_DEFAULT_NAME);
         assertThat(reportFile).exists();
     }
+
+
 
     @Test
     public void jacocoMergeReportXmlFileExists() throws JAXBException, FileNotFoundException, XMLStreamException {
@@ -44,7 +61,7 @@ public class ReportTesting {
         throws XMLStreamException, JAXBException, FileNotFoundException {
         XmlReport report = readXmlReport();
         Set<String> reportClassNames = report.getClassNames();
-        List<String> allClassFiles = new BuildFilesListing().listClassNames(PROJECT_FOLDER);
+        List<String> allClassFiles = new BuildFilesListing(projectFolder).listClassNames();
         assertThat(allClassFiles).isNotEmpty();
         assertThat(reportClassNames).containsAll(allClassFiles);
     }
@@ -52,15 +69,21 @@ public class ReportTesting {
     @Test
     public void jacocoMergeReportContainsAllMethodsOfProjectModules()
         throws XMLStreamException, JAXBException, FileNotFoundException {
-        List<String> allMethodNames = new BuildFilesListing().listAllMethodNames(PROJECT_FOLDER);
+        List<String> allMethodNames = new BuildFilesListing(projectFolder).listAllMethodNames();
         XmlReport report = readXmlReport();
         List<String> reportMethodNames = report.listAllReportedMethodNames();
         assertThat(allMethodNames).hasSameElementsAs(reportMethodNames);
     }
 
+    private void setupFolders(File projectFolder) {
+        this.projectFolder = projectFolder;
+        File buildFolder = new File(projectFolder, DEFAULT_BUILD_FOLDER).getAbsoluteFile();
+        this.buildJacocoFolder = new File(buildFolder, DEFAULT_JACOCO_FOLDER);
+        this.jacocoMergedReportFolder = new File(buildJacocoFolder, REPORT_FOLDER);
+    }
 
     private XmlReport readXmlReport() throws XMLStreamException, FileNotFoundException, JAXBException {
-        File reportFile = new File(JACOCO_MERGED_REPORT_FOLDER, "jacocoAggregateReport.xml");
+        File reportFile = new File(jacocoMergedReportFolder, JACOCO_AGGREGATE_REPORT_XML_FILENAME);
         assertThat(reportFile).exists();
         return parseReport(reportFile);
     }

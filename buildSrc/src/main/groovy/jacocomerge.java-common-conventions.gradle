@@ -32,7 +32,7 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
-        failFast = true
+        failFast = false
         testLogging {
             events 'skipped', 'passed', 'failed'
         }

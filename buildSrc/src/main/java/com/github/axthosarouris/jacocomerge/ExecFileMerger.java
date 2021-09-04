@@ -1,54 +1,59 @@
 package com.github.axthosarouris.jacocomerge;
 
+import static com.github.axthosarouris.jacocomerge.Constants.BUILD_FOLDER_NAME;
+import static com.github.axthosarouris.jacocomerge.Constants.DEFAULT_JACOCO_EXEC_REPORT_FILE;
+import static com.github.axthosarouris.jacocomerge.Constants.JACOCO_RESULTS_FOLDER_NAME;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import no.unit.nva.s3.UnixPath;
 import org.gradle.api.Project;
 
 public class ExecFileMerger {
 
-    public static final String JACOCO_RESULTS_FOLDER_NAME = "jacoco";
-    public static final String DEFAULT_JACOCO_EXEC_REPORT_FILE = "test.exec";
-    public static File ROOT_BUILD_FOLDER =  new File("build");
-    public static File JACOCO_REPORT_FILES_FOLDER = new File(ROOT_BUILD_FOLDER, JACOCO_RESULTS_FOLDER_NAME);
-    public static final File JACOCO_MERGE_REPORT_LOCATION =
-        new File(JACOCO_REPORT_FILES_FOLDER,DEFAULT_JACOCO_EXEC_REPORT_FILE);
-
     private final Project project;
+    private final File jacocoMergeLocation;
 
     public ExecFileMerger(Project project) {
         this.project = project;
+        File projectFolder = this.project.getProjectDir().getAbsoluteFile();
+        File buildFolder = new File(projectFolder, BUILD_FOLDER_NAME).getAbsoluteFile();
+        File jacocoReportsFolder = new File(buildFolder, JACOCO_RESULTS_FOLDER_NAME).getAbsoluteFile();
+        this.jacocoMergeLocation = new File(jacocoReportsFolder, DEFAULT_JACOCO_EXEC_REPORT_FILE).getAbsoluteFile();
     }
 
     public File createMergedExecFile() throws IOException {
-        Set<File> execFiles = listAllExecFiles();
+        Set<File> execFiles = listSubprojectExecFiles();
         return mergeFiles(execFiles);
     }
 
     private File mergeFiles(Set<File> execFiles) throws IOException {
-        Merge merge = new Merge();
+        ExecFilesMerge merge = new ExecFilesMerge();
         merge.addExecFiles(execFiles);
-        File destfile = new File(JACOCO_MERGE_REPORT_LOCATION.toString());
-        merge.setDestfile(destfile);
+        merge.setDestinationFile(jacocoMergeLocation);
         merge.createMergedFile();
-        return destfile;
+        return jacocoMergeLocation;
     }
 
-    private Set<File> listAllExecFiles() {
-        return Optional.ofNullable(project).stream()
-            .map(Project::getSubprojects)
-            .flatMap(Collection::stream)
-            .map(Project::getBuildDir)
-            .map(File::getAbsolutePath)
-            .map(UnixPath::fromString)
+    private Set<File> listSubprojectExecFiles() {
+        return listSubProjectBuildDirs()
             .map(buildDir -> buildDir.addChild(JACOCO_RESULTS_FOLDER_NAME))
             .map(jacocoFolder -> jacocoFolder.addChild(DEFAULT_JACOCO_EXEC_REPORT_FILE))
             .map(execFile -> new File(execFile.toString()))
             .filter(File::exists)
             .collect(Collectors.toSet());
+    }
+
+    private Stream<UnixPath> listSubProjectBuildDirs() {
+        return Optional.ofNullable(project).stream()
+            .map(Project::getSubprojects)
+            .flatMap(Collection::stream)
+            .map(Project::getBuildDir)
+            .map(File::getAbsolutePath)
+            .map(UnixPath::fromString);
     }
 }

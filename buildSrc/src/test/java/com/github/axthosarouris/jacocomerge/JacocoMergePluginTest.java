@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 public class JacocoMergePluginTest {
 
-    public static final String TEST_PROJECT_PATH = "TEST_PROJECT_PATH";
     public File projectsDir= new File(".");
     private ByteArrayOutputStream xmlOutputStream;
     private ByteArrayOutputStream csvOutputStream;
