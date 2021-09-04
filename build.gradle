@@ -8,5 +8,16 @@ wrapper {
 }
 
 build{
-    doLast {jacocoMergeReport}
+    finalizedBy(jacocoMergeReport)
+}
+
+task copyBuildSrc{
+    copy{
+        from 'buildSrc/src/main/'
+        into 'jacocoMergePlugin/src/main/'
+    }
+    copy{
+        from 'buildSrc/src/test/'
+        into 'jacocoMergePlugin/src/test/'
+    }
 }

@@ -1,0 +1,23 @@
+plugins {
+    id 'jacocomerge.pluginapplication'
+}
+
+subprojects{
+     apply plugin: 'jacocomerge.pluginapplication'
+}
+
+jacocoMergeReport {
+    projectName = "testProject01"
+}
+
+
+build{
+    finalizedBy(jacocoMergeReport)
+    dependsOn(":testProject01:moduleA:build",
+            ":testProject01:moduleB:build"
+    )
+
+
+}
+
+
