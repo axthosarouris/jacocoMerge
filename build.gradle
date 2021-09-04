@@ -8,5 +8,5 @@ wrapper {
 }
 
 build{
-    doLast {jacocoMergeReport}
+    finalizedBy(jacocoMergeReport)
 }
