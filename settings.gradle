@@ -1,6 +1,6 @@
 rootProject.name = 'jacocoMerge'
-//include 'testProject01'
-//include 'testProject01:moduleA'
-//include 'testProject01:moduleB'
+include 'testProject01'
+include 'testProject01:moduleA'
+include 'testProject01:moduleB'
 include 'functionaltesting'
 
