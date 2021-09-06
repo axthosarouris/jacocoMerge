@@ -56,21 +56,3 @@ test {
     finalizedBy jacocoTestReport
 }
 
-sourceSets{
-    main{
-        java{
-            srcDirs = ['../jacocoMergePlugin/src/main/java']
-        }
-        resources{
-            srcDirs = ['../jacocoMergePlugin/src/main/resources']
-        }
-    }
-    test{
-        java{
-            srcDirs = ['../jacocoMergePlugin/src/test/java']
-        }
-        resources {
-            srcDirs = ['../jacocoMergePlugin/src/test/resources']
-        }
-    }
-}

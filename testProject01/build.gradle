@@ -16,8 +16,6 @@ build{
     dependsOn(":testProject01:moduleA:build",
             ":testProject01:moduleB:build"
     )
-
-
 }
 
 
