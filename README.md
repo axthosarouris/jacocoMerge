@@ -39,7 +39,7 @@ the result of a gradle action on the `testProject`.
 1. The`functionalTesting` code can probably use a GradleRunner in its tests via the method 
 `GradleRunner.create().withPluginClasspath()`, and therefore it has all 
 the abilities with the `functionalTest` folder in the 
-[default plugin setup] (https://github.com/axthosarouris/gradle-plugin-no-test-project-dependencies)
+[default plugin setup](https://github.com/axthosarouris/gradle-plugin-no-test-project-dependencies)
 but it has also the ability to run functionality tests on the result of building the project itself, 
 i.e. we can test the result of executing the task `gradle testProject:<task>` without having to use 
 a GradleRunner. This can be helpful if the `testProject` is big and complex as we can make use of 
@@ -51,7 +51,7 @@ this project we need access to the classes of the testingProject in order to lis
 
 3. Although the `testProject` is a module in the plugin project, it can be easily turned into 
   an "independent" project for running with the GradleRunner, by injecting a `settings.gradle` file
-  as we do in the [default plugin setup] (https://github.com/axthosarouris/gradle-plugin-no-test-project-dependencies).
+  as we do in the [default plugin setup](https://github.com/axthosarouris/gradle-plugin-no-test-project-dependencies).
 
 ###### Notes
 
