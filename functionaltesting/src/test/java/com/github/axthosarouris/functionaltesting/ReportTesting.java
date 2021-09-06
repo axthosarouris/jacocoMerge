@@ -48,8 +48,6 @@ public class ReportTesting {
         assertThat(reportFile).exists();
     }
 
-
-
     @Test
     public void jacocoMergeReportXmlFileExists() throws JAXBException, FileNotFoundException, XMLStreamException {
         XmlReport report = readXmlReport();
