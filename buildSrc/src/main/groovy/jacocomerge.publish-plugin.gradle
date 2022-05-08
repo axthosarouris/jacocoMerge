@@ -1,0 +1,24 @@
+plugins{
+    id 'jacocomerge.java-common-conventions'
+    id "com.gradle.plugin-publish"
+}
+
+
+pluginBundle {
+    website ='https://github.com/axthosarouris/jacocoMerge'
+    vcsUrl = 'https://github.com/axthosarouris/jacocoMerge'
+    tags = ["Jacoco",'code coverage', 'test coverage', 'aggregate','report']
+}
+
+gradlePlugin {
+    plugins {
+        greetingsPlugin {
+            id = 'axthosarouris-jacocomerge'
+            displayName = 'Jacoco aggregate report for multi-module projects'
+            description = 'Creates a Jacoco code coverage report by merging reports produced on each module'
+            implementationClass = 'com.github.axthosarouris.jacocomerge.JacocoMergePlugin'
+        }
+    }
+}
+
+

@@ -1,6 +1,7 @@
 plugins{
     id 'jacocomerge.java-common-conventions'
     id 'java-gradle-plugin'
+    id 'jacocomerge.publish-plugin'
 }
 
 
