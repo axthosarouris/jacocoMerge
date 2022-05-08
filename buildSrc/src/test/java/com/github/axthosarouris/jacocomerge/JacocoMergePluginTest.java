@@ -10,10 +10,6 @@ import org.junit.jupiter.api.Test;
 
 public class JacocoMergePluginTest {
 
-    public File projectsDir = new File(".");
-    private ByteArrayOutputStream xmlOutputStream;
-    private ByteArrayOutputStream csvOutputStream;
-
     @BeforeEach
     public void setup() {
 
