@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import no.unit.nva.s3.UnixPath;
+import nva.commons.core.paths.UnixPath;
 import org.gradle.api.Project;
 
 public class ExecFileMerger {
