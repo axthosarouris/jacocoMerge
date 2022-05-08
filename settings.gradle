@@ -3,4 +3,5 @@ include 'testProject01'
 include 'testProject01:moduleA'
 include 'testProject01:moduleB'
 include 'functionaltesting'
+include 'plugin-module'
 

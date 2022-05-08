@@ -50,4 +50,12 @@ artifacts {
     archives sourcesJar
 }
 
+tasks.register("copy-module", Copy){
+    from "./buildSrc/src/main/java"
+    into "plugin-module/src/main/java"
+}
+
+
+
+
 

@@ -256,4 +256,7 @@ gradle-app.setting
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
-# End of https://www.toptal.com/developers/gitignore/api/gradle,java,git,linux,intellij,eclipse
+
+
+### Ignore files copied by gradle
+plugin-module/src/main/java/*
